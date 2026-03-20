@@ -7,6 +7,14 @@
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
+    /* LADA brand colors */
+    --lada-graphite: #3e4554;
+    --lada-graphite-dark: #252b37;
+    --lada-graphite-light: #4a5467;
+    --lada-red: #c0392b;
+    --lada-silver: #b0b8c4;
+    --lada-white: #f5f6f8;
+
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
 
@@ -97,5 +105,23 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family:
+      "Inter",
+      "Pragmatica",
+      -apple-system,
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Inter", "Pragmatica", sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 }
