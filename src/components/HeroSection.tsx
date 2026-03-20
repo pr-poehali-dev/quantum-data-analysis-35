@@ -1,6 +1,160 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
+/* ===== MODAL ===== */
+function LeadModal({ open, onClose, title = 'Узнать цену' }: { open: boolean; onClose: () => void; title?: string }) {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open) { setSent(false); setName(''); setPhone(''); }
+  }, [open]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => { setLoading(false); setSent(true); }, 900);
+  };
+
+  if (!open) return null;
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 1000,
+        background: 'rgba(10,12,18,0.82)',
+        backdropFilter: 'blur(6px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 20,
+        animation: 'fadeIn .2s ease'
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: '#252b37',
+          borderRadius: 8,
+          padding: '40px 36px',
+          width: '100%',
+          maxWidth: 420,
+          border: '1px solid rgba(255,255,255,0.08)',
+          position: 'relative',
+          animation: 'slideUp .25s ease',
+          fontFamily: "'Inter','Pragmatica',sans-serif"
+        }}
+      >
+        <button
+          onClick={onClose}
+          style={{ position: 'absolute', top: 16, right: 18, background: 'none', border: 'none', color: 'rgba(255,255,255,0.35)', fontSize: 22, cursor: 'pointer', lineHeight: 1 }}
+          aria-label="Закрыть"
+        >×</button>
+
+        {sent ? (
+          <div style={{ textAlign: 'center', padding: '16px 0' }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
+            <h3 style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 10 }}>Заявка принята!</h3>
+            <p style={{ fontSize: 14, fontWeight: 400, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>
+              Наш менеджер свяжется с вами в ближайшее время
+            </p>
+          </div>
+        ) : (
+          <>
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', color: '#c0392b', textTransform: 'uppercase', marginBottom: 10 }}>
+              Спецпредложение
+            </p>
+            <h3 style={{ fontSize: 24, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', marginBottom: 6 }}>{title}</h3>
+            <p style={{ fontSize: 13, fontWeight: 400, color: 'rgba(255,255,255,0.50)', marginBottom: 28, lineHeight: 1.6 }}>
+              Оставьте контакты — менеджер перезвонит и назовёт лучшую цену
+            </p>
+
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <input
+                type="text"
+                placeholder="Ваше имя"
+                required
+                value={name}
+                onChange={e => setName(e.target.value)}
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: 4,
+                  padding: '14px 16px',
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: '#fff',
+                  outline: 'none',
+                  fontFamily: 'inherit',
+                  width: '100%',
+                  boxSizing: 'border-box'
+                }}
+              />
+              <input
+                type="tel"
+                placeholder="+7 (___) ___-__-__"
+                required
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: 4,
+                  padding: '14px 16px',
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: '#fff',
+                  outline: 'none',
+                  fontFamily: 'inherit',
+                  width: '100%',
+                  boxSizing: 'border-box'
+                }}
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  background: '#c0392b',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 3,
+                  padding: '16px',
+                  fontSize: 13,
+                  fontWeight: 700,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  cursor: loading ? 'wait' : 'pointer',
+                  fontFamily: 'inherit',
+                  marginTop: 4,
+                  opacity: loading ? 0.7 : 1,
+                  transition: 'opacity .2s'
+                }}
+              >
+                {loading ? 'Отправляем...' : 'Отправить заявку'}
+              </button>
+            </form>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>
+              Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+            </p>
+          </>
+        )}
+      </div>
+
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+      `}</style>
+    </div>
+  );
+}
+
 const bannerImages = [
   'https://cdn.poehali.dev/files/6ad9b5d5-f633-448d-8dc0-725ef751e0c2.png',
   'https://cdn.poehali.dev/files/086da4a9-d125-4cb5-aa1d-31490bc0bb1b.jpg',
@@ -31,7 +185,11 @@ const target = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 export default function HeroSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [modal, setModal] = useState<{ open: boolean; title: string }>({ open: false, title: 'Узнать цену' });
   const countdown = useCountdown(target);
+
+  const openModal = (title = 'Узнать цену') => setModal({ open: true, title });
+  const closeModal = () => setModal(m => ({ ...m, open: false }));
 
   useEffect(() => {
     setIsLoaded(true);
@@ -43,6 +201,7 @@ export default function HeroSection() {
 
   return (
     <div style={{ fontFamily: "'Inter', 'Pragmatica', -apple-system, sans-serif" }}>
+      <LeadModal open={modal.open} onClose={closeModal} title={modal.title} />
       {/* ===== HEADER ===== */}
       <header
         style={{ background: 'rgba(37,43,55,0.97)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
@@ -155,6 +314,7 @@ export default function HeroSection() {
               </div>
 
               <button
+                onClick={() => openModal('Узнать цену на LADA')}
                 style={{ background: '#c0392b', color: '#fff', border: 'none', borderRadius: 3, padding: '17px 52px', fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit', transition: 'opacity .2s' }}
                 onMouseOver={e => (e.currentTarget.style.opacity = '0.86')}
                 onMouseOut={e => (e.currentTarget.style.opacity = '1')}
@@ -276,12 +436,13 @@ export default function HeroSection() {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {[
-                  { text: 'Записаться на пробную поездку', bg: '#c0392b', color: '#fff', weight: 700 },
-                  { text: 'Подобрать комплектацию', bg: 'transparent', color: '#fff', weight: 600, border: '1px solid rgba(255,255,255,0.25)' },
-                  { text: 'Узнать цену по акции', bg: '#f6c90e', color: '#1a1a1a', weight: 800 },
+                  { text: 'Записаться на пробную поездку', bg: '#c0392b', color: '#fff', weight: 700, modal: 'Запись на тест-драйв LADA GRANTA' },
+                  { text: 'Подобрать комплектацию', bg: 'transparent', color: '#fff', weight: 600, border: '1px solid rgba(255,255,255,0.25)', modal: 'Подобрать комплектацию LADA GRANTA' },
+                  { text: 'Узнать цену по акции', bg: '#f6c90e', color: '#1a1a1a', weight: 800, modal: 'Узнать цену по акции' },
                 ].map((btn) => (
                   <button
                     key={btn.text}
+                    onClick={() => openModal(btn.modal)}
                     style={{
                       background: btn.bg,
                       color: btn.color,
