@@ -1,149 +1,340 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
-const images = [
-  'https://cdn.poehali.dev/templates/creative-portfolio-ru/gallery-2.jpg',
-  'https://cdn.poehali.dev/templates/creative-portfolio-ru/gallery-1.jpg',
-  'https://cdn.poehali.dev/templates/creative-portfolio-ru/gallery-4.jpg',
-  'https://cdn.poehali.dev/templates/creative-portfolio-ru/gallery-5.jpg',
+const bannerImages = [
+  'https://cdn.poehali.dev/files/6ad9b5d5-f633-448d-8dc0-725ef751e0c2.png',
+  'https://cdn.poehali.dev/files/086da4a9-d125-4cb5-aa1d-31490bc0bb1b.jpg',
+  'https://cdn.poehali.dev/files/0aaeb6d4-deb7-4b8d-98a6-6702d654672a.jpg',
 ];
+
+const LADA_GRAY = '#4a5568';
+const LADA_RED = '#e53e3e';
+
+function useCountdown(targetDate: Date) {
+  const getTime = () => {
+    const diff = targetDate.getTime() - Date.now();
+    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    return {
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((diff / (1000 * 60)) % 60),
+      seconds: Math.floor((diff / 1000) % 60),
+    };
+  };
+  const [time, setTime] = useState(getTime);
+  useEffect(() => {
+    const id = setInterval(() => setTime(getTime()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return time;
+}
+
+const target = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 
 export default function HeroSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const countdown = useCountdown(target);
 
   useEffect(() => {
     setIsLoaded(true);
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 4000);
-
+      setCurrentIndex((prev) => (prev + 1) % bannerImages.length);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-white">
-      <div className="absolute inset-0">
-        {images.map((src, index) => (
-          <div
-            key={src}
-            className={cn(
-              'absolute inset-0 transition-opacity duration-1000 ease-in-out',
-              currentIndex === index ? 'opacity-100' : 'opacity-0'
-            )}
-          >
+    <>
+      {/* ===== HEADER ===== */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#2d3748]/95 backdrop-blur-sm border-b border-white/10">
+        <div className="container mx-auto px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <img
-              src={src}
-              alt=""
-              className="h-full w-full object-cover"
+              src="https://cdn.poehali.dev/files/f0fa596a-18a9-4fac-a9b2-96c2632b67a4.png"
+              alt="LADA"
+              className="h-10 w-auto"
             />
           </div>
-        ))}
-      </div>
+          <nav className="hidden md:flex items-center gap-8 text-white/80 text-sm font-medium">
+            <a href="#hero" className="hover:text-white transition-colors">Модели</a>
+            <a href="#advantages" className="hover:text-white transition-colors">Преимущества</a>
+            <a href="#granta" className="hover:text-white transition-colors">GRANTA</a>
+          </nav>
+          <a
+            href="tel:+78001234567"
+            className="text-white font-semibold text-sm bg-[#e53e3e] hover:bg-[#c53030] px-5 py-2 rounded transition-colors"
+          >
+            8 800 123-45-67
+          </a>
+        </div>
+      </header>
 
-      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
-
-      <div className="relative z-10 flex h-full items-center">
-        <div className="container mx-auto px-8 md:px-16">
-          <div className="flex max-w-2xl flex-col gap-12">
-            {/* Portrait */}
+      {/* ===== HERO BANNER ===== */}
+      <section id="hero" className="relative h-screen w-full overflow-hidden">
+        <div className="absolute inset-0">
+          {bannerImages.map((src, index) => (
             <div
+              key={src}
               className={cn(
-                'transform transition-all duration-1000 ease-out',
-                isLoaded ? 'translate-x-0 opacity-100' : '-translate-x-8 opacity-0'
+                'absolute inset-0 transition-opacity duration-1000 ease-in-out',
+                currentIndex === index ? 'opacity-100' : 'opacity-0'
               )}
             >
-              <div className="relative h-48 w-48 overflow-hidden rounded-full border-4 border-white shadow-2xl md:h-64 md:w-64">
-                <img
-                  src="https://cdn.poehali.dev/templates/creative-portfolio-ru/portrait.jpg"
-                  alt="Креативный специалист"
-                  className="h-full w-full object-cover"
-                />
-              </div>
+              <img src={src} alt="" className="h-full w-full object-cover" />
             </div>
+          ))}
+        </div>
 
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/20" />
+
+        <div className="relative z-10 flex h-full items-center pt-16">
+          <div className="container mx-auto px-6 md:px-12">
             <div
               className={cn(
-                'transform transition-all duration-1000 delay-300 ease-out',
-                isLoaded ? 'translate-x-0 opacity-100' : '-translate-x-8 opacity-0'
+                'max-w-2xl transform transition-all duration-1000 ease-out',
+                isLoaded ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
               )}
             >
-              <div className="space-y-4">
-                <p className="text-3xl font-light text-white md:text-4xl lg:text-5xl">
-                  Алексей Иванов
-                </p>
-                <p className="text-xl font-light text-white/80 md:text-2xl">
-                  Креативный директор | Дизайнер
-                </p>
-                <div className="flex gap-6 pt-4">
-                  <a
-                    href="https://t.me/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white/70 transition-colors hover:text-white"
-                    aria-label="Telegram"
-                  >
-                    <svg
-                      className="h-7 w-7"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
-                    </svg>
-                  </a>
-                  <a
-                    href="https://vk.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white/70 transition-colors hover:text-white"
-                    aria-label="VKontakte"
-                  >
-                    <svg
-                      className="h-7 w-7"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-1.135-1.745-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.12-5.339-3.202-2.17-3.043-2.763-5.32-2.763-5.788 0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.677.863 2.49 2.303 4.675 2.896 4.675.22 0 .322-.102.322-.66V9.721c-.068-1.186-.695-1.287-.695-1.71 0-.203.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .372.17.508.271.508.22 0 .407-.136.814-.542 1.27-1.422 2.18-3.625 2.18-3.625.119-.254.322-.491.763-.491h1.744c.525 0 .644.27.525.643-.22 1.017-2.354 4.031-2.354 4.031-.186.305-.254.44 0 .78.186.254.796.779 1.203 1.253.745.847 1.32 1.558 1.473 2.05.17.49-.085.744-.576.744z" />
-                    </svg>
-                  </a>
-                  <a
-                    href="https://instagram.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white/70 transition-colors hover:text-white"
-                    aria-label="Instagram"
-                  >
-                    <svg
-                      className="h-7 w-7"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.689-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                    </svg>
-                  </a>
+              <div className="inline-block bg-[#e53e3e] text-white text-xs font-bold px-3 py-1 rounded mb-4 uppercase tracking-widest">
+                Только 3 дня
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4">
+                СПЕЦ. ЦЕНА<br />
+                <span className="text-[#e53e3e]">на все модели</span> LADA!
+              </h1>
+              <p className="text-xl md:text-2xl text-white/90 mb-8 font-light">
+                Выгода для Вас до <span className="text-yellow-400 font-bold">500 000 ₽</span>
+              </p>
+
+              {/* Countdown */}
+              <div className="flex gap-4 mb-10">
+                {[
+                  { label: 'Дней', value: countdown.days },
+                  { label: 'Часов', value: countdown.hours },
+                  { label: 'Минут', value: countdown.minutes },
+                  { label: 'Секунд', value: countdown.seconds },
+                ].map(({ label, value }) => (
+                  <div key={label} className="text-center">
+                    <div className="bg-white/15 backdrop-blur-sm border border-white/30 rounded-lg px-4 py-3 min-w-[64px]">
+                      <span className="text-3xl font-bold text-white tabular-nums">
+                        {String(value).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <p className="text-white/60 text-xs mt-1 uppercase tracking-wider">{label}</p>
+                  </div>
+                ))}
+              </div>
+
+              <button className="bg-[#e53e3e] hover:bg-[#c53030] text-white font-bold text-lg px-10 py-4 rounded-lg transition-all hover:scale-105 shadow-2xl">
+                Узнать цену
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Slide dots */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          {bannerImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={cn(
+                'h-1 transition-all duration-300 rounded-full',
+                currentIndex === index ? 'w-10 bg-white' : 'w-6 bg-white/40 hover:bg-white/60'
+              )}
+              aria-label={`Слайд ${index + 1}`}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* ===== ADVANTAGES ===== */}
+      <section id="advantages" className="py-20 bg-[#1a202c]">
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
+            Почему выбирают LADA
+          </h2>
+          <p className="text-white/50 text-center mb-14 text-lg">Наши преимущества для вас</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: '🛡️',
+                title: 'Гарантия до 6 лет',
+                desc: 'или до 180 000 км пробега — выбирайте, что наступит позже',
+              },
+              {
+                icon: '💳',
+                title: 'Взнос от 0%',
+                desc: 'Первоначальный взнос от нуля — садитесь за руль уже сегодня',
+              },
+              {
+                icon: '🏎️',
+                title: 'Технологии Volvo',
+                desc: 'Автомобили разработаны с применением технологий мирового класса',
+              },
+              {
+                icon: '🔄',
+                title: 'Выгода по Trade-in',
+                desc: 'Сдайте старый автомобиль и получите максимальную скидку на новый',
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="group bg-[#2d3748] hover:bg-[#3a4a63] border border-white/10 hover:border-[#e53e3e]/40 rounded-2xl p-8 transition-all duration-300 text-center"
+              >
+                <div className="text-5xl mb-5">{item.icon}</div>
+                <h3 className="text-white font-bold text-xl mb-3">{item.title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== GRANTA CARD ===== */}
+      <section id="granta" className="py-20 bg-[#232936]">
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
+            LADA GRANTA
+          </h2>
+          <p className="text-white/50 text-center mb-14 text-lg">Спецпредложение ограничено</p>
+
+          <div className="max-w-5xl mx-auto bg-[#2d3748] rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+            <div className="grid md:grid-cols-2 gap-0">
+              {/* Left: Car image + color switcher + slider */}
+              <GrantaGallery />
+
+              {/* Right: UTP + buttons */}
+              <div className="p-8 md:p-10 flex flex-col justify-center">
+                <div className="space-y-4 mb-8">
+                  {[
+                    { icon: '💰', text: 'Выгода до 500 000 ₽' },
+                    { icon: '💳', text: 'Первоначальный взнос от 0%' },
+                    { icon: '🎁', text: 'Подарки: 4 ТО в подарок' },
+                    { icon: '📊', text: 'В кредит под 4,7% годовых' },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-4 bg-[#1a202c] rounded-xl px-5 py-4 border border-white/5">
+                      <span className="text-2xl">{item.icon}</span>
+                      <span className="text-white font-medium">{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-3">
+                  <button className="w-full bg-[#e53e3e] hover:bg-[#c53030] text-white font-bold py-4 px-6 rounded-xl transition-all hover:scale-[1.02] text-sm">
+                    Записаться на пробную поездку
+                  </button>
+                  <button className="w-full bg-transparent border-2 border-white/30 hover:border-white text-white font-semibold py-4 px-6 rounded-xl transition-all text-sm">
+                    Подобрать комплектацию
+                  </button>
+                  <button className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-4 px-6 rounded-xl transition-all hover:scale-[1.02] text-sm">
+                    Узнать цену по акции
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="absolute bottom-8 right-8 z-20 flex gap-2">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
+      {/* Footer */}
+      <footer className="bg-[#1a202c] border-t border-white/10 py-8">
+        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <img
+            src="https://cdn.poehali.dev/files/f0fa596a-18a9-4fac-a9b2-96c2632b67a4.png"
+            alt="LADA"
+            className="h-8 w-auto opacity-70"
+          />
+          <p className="text-white/40 text-sm text-center">
+            © 2024 LADA. Официальный дилер. Все права защищены.
+          </p>
+          <a href="https://www.lada.ru" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white/70 text-sm transition-colors">
+            lada.ru
+          </a>
+        </div>
+      </footer>
+    </>
+  );
+}
+
+const carColors = [
+  { name: 'Красный', hex: '#e53e3e', img: 'https://cdn.poehali.dev/projects/2b474f09-9a21-4d1a-911c-9a3e56e7256b/files/7dc81f6c-b1a4-41fb-af00-802b118c9c05.jpg' },
+  { name: 'Белый', hex: '#e2e8f0', img: 'https://cdn.poehali.dev/projects/2b474f09-9a21-4d1a-911c-9a3e56e7256b/files/bfbaca38-cd17-47d1-83ec-3cdbfc5ed514.jpg' },
+  { name: 'Синий', hex: '#3182ce', img: 'https://cdn.poehali.dev/projects/2b474f09-9a21-4d1a-911c-9a3e56e7256b/files/5be70090-8941-45ff-8678-7217bd3ced7e.jpg' },
+];
+
+const sliderImages = [
+  'https://cdn.poehali.dev/projects/2b474f09-9a21-4d1a-911c-9a3e56e7256b/files/7dc81f6c-b1a4-41fb-af00-802b118c9c05.jpg',
+  'https://cdn.poehali.dev/projects/2b474f09-9a21-4d1a-911c-9a3e56e7256b/files/bfbaca38-cd17-47d1-83ec-3cdbfc5ed514.jpg',
+  'https://cdn.poehali.dev/projects/2b474f09-9a21-4d1a-911c-9a3e56e7256b/files/5be70090-8941-45ff-8678-7217bd3ced7e.jpg',
+];
+
+function GrantaGallery() {
+  const [activeColor, setActiveColor] = useState(0);
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  const handleColor = (i: number) => {
+    setActiveColor(i);
+    setActiveSlide(i);
+  };
+
+  return (
+    <div className="bg-[#1a202c] p-8 flex flex-col gap-6">
+      {/* Main car image */}
+      <div className="relative overflow-hidden rounded-2xl bg-[#232936] h-56 flex items-center justify-center">
+        {carColors.map((c, i) => (
+          <img
+            key={i}
+            src={c.img}
+            alt={`LADA Granta ${c.name}`}
             className={cn(
-              'h-1 transition-all duration-300',
-              currentIndex === index ? 'w-12 bg-white' : 'w-8 bg-white/40 hover:bg-white/60'
+              'absolute inset-0 w-full h-full object-cover transition-opacity duration-500',
+              activeColor === i ? 'opacity-100' : 'opacity-0'
             )}
-            aria-label={`Перейти к слайду ${index + 1}`}
           />
         ))}
       </div>
-    </section>
+
+      {/* Color switcher */}
+      <div>
+        <p className="text-white/50 text-xs uppercase tracking-wider mb-3">Выберите цвет</p>
+        <div className="flex gap-3">
+          {carColors.map((c, i) => (
+            <button
+              key={i}
+              onClick={() => handleColor(i)}
+              className={cn(
+                'w-8 h-8 rounded-full border-2 transition-all duration-200',
+                activeColor === i ? 'border-white scale-110' : 'border-white/20 hover:border-white/60'
+              )}
+              style={{ backgroundColor: c.hex }}
+              title={c.name}
+            />
+          ))}
+          <span className="text-white/60 text-sm self-center ml-2">{carColors[activeColor].name}</span>
+        </div>
+      </div>
+
+      {/* Slider thumbnails */}
+      <div>
+        <p className="text-white/50 text-xs uppercase tracking-wider mb-3">Фотографии</p>
+        <div className="flex gap-2">
+          {sliderImages.map((img, i) => (
+            <button
+              key={i}
+              onClick={() => { setActiveSlide(i); setActiveColor(i); }}
+              className={cn(
+                'flex-1 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200',
+                activeSlide === i ? 'border-[#e53e3e]' : 'border-white/10 hover:border-white/30'
+              )}
+            >
+              <img src={img} alt="" className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
