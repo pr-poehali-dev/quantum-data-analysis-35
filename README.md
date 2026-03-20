@@ -1,3 +1,16 @@
-# quantum-data-analysis-35
+# Креативное портфолио
 
-Initial repository setup for pr-poehali-dev/quantum-data-analysis-35
+![Preview](https://cdn.poehali.dev/templates/creative-portfolio-ru/preview-ru.jpg)
+
+Стильный шаблон портфолио для дизайнеров и креативщиков. Тёмная тема с эффектным hero-разделом, автоматической сменой фоновых изображений и плавными анимациями. Идеально подойдёт для демонстрации творческих работ и привлечения клиентов.
+
+Включает:
+- Hero-секция с автослайдером фоновых изображений
+- Круглый портрет с рамкой
+- Социальные ссылки (Telegram, VK, Instagram)
+- Плавные анимации при загрузке
+- Индикаторы слайдов
+
+```
+"tags": ["portfolio", "dark", "creative", "animations"]
+```
